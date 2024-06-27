@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 
 import classes from './AuthForm.module.css';
+require("dotenv").config();
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -18,10 +19,15 @@ const AuthForm = () => {
     const enteredEmail = emailRef.current.value;
     const enteredPassword = passwordRef.current.value;
      setIsLoading(true)
+     let url;
     if(isLogin){
+       url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.REACT_APP_WEB_API}`
+     
 
     }else{
-      fetch("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAoz56VljcJc7etHlwaOCXfKaL6WWgtKkM"
+      url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${process.env.REACT_APP_WEB_API}}`
+    }
+      fetch(url
         ,{
           method:"POST",
           body:JSON.stringify({
@@ -36,21 +42,24 @@ const AuthForm = () => {
       ).then(res=>{
         setIsLoading(false)
         if(res.ok){
-
+           return res.json()
         }else{
           return res.json().then(data=>{
-            console.log(data)
+           
                let errorMessage = "some error occured.."
                if(data && data.error && data.error.errors[0].message){
                 errorMessage = data.error.errors[0].message
                }
-               alert(errorMessage)
+              
+               throw new Error(errorMessage)
             
           })
         }
-      })
-    }
-
+      }).then(data=>console.log("token",data.localId))
+      .catch(e=> alert(e.message))
+    
+      emailRef.current.value = ""
+      passwordRef.current.value = ""
   }
   return (
     <section className={classes.auth}>
