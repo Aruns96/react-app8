@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-
+import { useState, useRef ,useContext} from 'react';
+import { UserContext } from '../../store/UserProvider';
 import classes from './AuthForm.module.css';
 require("dotenv").config();
 
@@ -8,7 +8,8 @@ const AuthForm = () => {
   const[isLoading,setIsLoading] = useState(false)
   const emailRef = useRef()
   const passwordRef = useRef()
-
+ 
+  const authCtx = useContext(UserContext);
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -55,7 +56,11 @@ const AuthForm = () => {
             
           })
         }
-      }).then(data=>console.log("token",data.localId))
+      }).then(data=>{
+       // console.log("token",data)
+        authCtx.login(data.idToken)
+
+      })
       .catch(e=> alert(e.message))
     
       emailRef.current.value = ""
