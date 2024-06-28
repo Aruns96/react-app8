@@ -2,11 +2,13 @@ import classes from './ProfileForm.module.css';
 import { useRef,useContext } from 'react';
 import { UserContext } from '../../store/UserProvider';
 //require("dotenv").config()
+import { useHistory } from 'react-router-dom';
 
 const ProfileForm = () => {
   const authCtx = useContext(UserContext)
   const token = authCtx.token;
   const newPasswordRef = useRef()
+  const history = useHistory()
   const submitHandler = (e) =>{
     e.preventDefault();
     const inputNewPassword = newPasswordRef.current.value;
@@ -24,7 +26,7 @@ const ProfileForm = () => {
         }
       }
      ).then(res =>{
-          
+          history.replace("/")
      })
   
 

@@ -1,6 +1,7 @@
 import { useState, useRef ,useContext} from 'react';
 import { UserContext } from '../../store/UserProvider';
 import classes from './AuthForm.module.css';
+import { useHistory } from 'react-router-dom';
 require("dotenv").config();
 
 const AuthForm = () => {
@@ -8,6 +9,7 @@ const AuthForm = () => {
   const[isLoading,setIsLoading] = useState(false)
   const emailRef = useRef()
   const passwordRef = useRef()
+  const history = useHistory()
  
   const authCtx = useContext(UserContext);
 
@@ -59,7 +61,7 @@ const AuthForm = () => {
       }).then(data=>{
        // console.log("token",data)
         authCtx.login(data.idToken)
-         
+         history.replace("/")
       })
       .catch(e=> alert(e.message))
     
